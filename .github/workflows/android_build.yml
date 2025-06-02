@@ -20,17 +20,25 @@ jobs:
       - name: Set up JDK 17 # 步骤2: 设置Java开发工具包
         uses: actions/setup-java@v4
         with:
-          java-version: '17' # 根据你的项目需求设置Java版本
-          distribution: 'temurin' # 选择Java发行版，例如Temurin、AdoptOpenJDK等
-          cache: 'gradle' # 缓存Gradle依赖，加快后续构建速度
+          java-version: '17' # 根据你的项目需求设置Java版本，这里保持17
+          distribution: 'temurin' # 选择Java发行版
+          cache: 'gradle' # 缓存Gradle依赖
 
-      - name: Grant execute permission for gradlew # 步骤3: 授予gradlew执行权限
+      - name: Set up Android SDK and accept licenses # 步骤3: 设置Android SDK并接受许可
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 33 # 根据 app/build.gradle 中的 compileSdk 设置
+          # build-tools: 33.0.2 # 兼容 compileSdk 33 的一个常见版本，如果你的项目中没有明确指定 buildToolsVersion，可以不写或写一个已知兼容版本
+          ndk: 29.0.13113456 # 根据 app/build.gradle 中的 ndkVersion 设置，注意去掉了 ' rc1'
+          accept-licenses: true # 自动接受所有Android SDK许可协议
+
+      - name: Grant execute permission for gradlew # 步骤4: 授予gradlew执行权限
         run: chmod +x gradlew
 
-      - name: Build Debug APK # 步骤4: 构建Debug APK
+      - name: Build Debug APK # 步骤5: 构建Debug APK
         run: ./gradlew assembleDebug # 运行Gradle命令构建Debug APK
 
-      - name: Upload Debug APK as Artifact # 步骤5: 将APK作为工件上传
+      - name: Upload Debug APK as Artifact # 步骤6: 将APK作为工件上传
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk
