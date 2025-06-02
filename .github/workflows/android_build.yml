@@ -1,0 +1,37 @@
+name: Android CI Build
+
+on:
+  push:
+    branches:
+      - remove-devolay # 当代码推送到remove-devolay分支时触发
+  pull_request:
+    branches:
+      - remove-devolay # 当有拉取请求合并到remove-devolay分支时触发
+  workflow_dispatch: # 允许手动触发此工作流程
+
+jobs:
+  build_debug_apk:
+    runs-on: ubuntu-latest # 使用Ubuntu最新版本作为运行器
+
+    steps:
+      - name: Checkout Code # 步骤1: 检出代码
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17 # 步骤2: 设置Java开发工具包
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17' # 根据你的项目需求设置Java版本
+          distribution: 'temurin' # 选择Java发行版，例如Temurin、AdoptOpenJDK等
+          cache: 'gradle' # 缓存Gradle依赖，加快后续构建速度
+
+      - name: Grant execute permission for gradlew # 步骤3: 授予gradlew执行权限
+        run: chmod +x gradlew
+
+      - name: Build Debug APK # 步骤4: 构建Debug APK
+        run: ./gradlew assembleDebug # 运行Gradle命令构建Debug APK
+
+      - name: Upload Debug APK as Artifact # 步骤5: 将APK作为工件上传
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk # APK的路径
