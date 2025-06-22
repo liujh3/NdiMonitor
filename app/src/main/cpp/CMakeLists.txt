@@ -16,10 +16,10 @@ add_library(ndi-wrapper SHARED
 # Tell CMake where to find headers (NDI SDK)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-# Tell CMake to import libndi.so
+# Tell CMake to import libndi_advanced.so
 add_library(ndi SHARED IMPORTED)
 set_target_properties(ndi PROPERTIES
-    IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libndi.so
+    IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libndi_advanced.so
 )
 
 # Find Android logging lib
